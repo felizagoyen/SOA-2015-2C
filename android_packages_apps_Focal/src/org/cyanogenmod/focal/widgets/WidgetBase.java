@@ -70,7 +70,6 @@ public abstract class WidgetBase {
     private final static float WIDGET_FADE_SCALE = 0.75f;
 
 
-
     private class ToggleClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -131,6 +130,16 @@ public abstract class WidgetBase {
         mWidget.getGrid().addView(v);
     }
 
+    /**
+     * Add a view to the container GPS widget
+     *
+     * @param v The view to add
+     */
+    public void addViewToContainerForGps(View v, int row, int column) {
+        mWidget.getGrid().setRowCount(row);
+        mWidget.getGrid().setColumnCount(column);
+        mWidget.getGrid().addView(v);
+    }
     /**
      * Force the size of the grid container to the specified
      * row and column count. The views can then be added more precisely
@@ -1022,4 +1031,102 @@ public abstract class WidgetBase {
             mWidgetIcon.setImageResource(iconResId);
         }
     }
+
+
+    /*
+    Agregado TP UNLAM Sistemas Operativos Avanzados, año 2015 2° Cuatrimestre
+    */
+
+    public class WidgetOptionGPSSeekBar extends CenteredSeekBar implements WidgetOption {
+
+        public WidgetOptionGPSSeekBar(Context context, AttributeSet attrs) {
+            super(context, attrs);
+            initialize();
+        }
+
+        public WidgetOptionGPSSeekBar(Integer min, Integer max, Context context) {
+            super(min, max, context);
+            initialize();
+        }
+
+        private void initialize() {
+            Resources res = getResources();
+            if (res == null) return;
+
+            setMaxWidth(240);
+            setMaxHeight(64);
+
+            // Set padding
+            int pad = res.getDimensionPixelSize(R.dimen.widget_container_padding);
+            this.setPadding(pad, pad, pad, pad);
+        }
+
+        @Override
+        public void onFinishInflate() {
+            super.onFinishInflate();
+            GridLayout.LayoutParams params = (GridLayout.LayoutParams) this.getLayoutParams();
+
+            if (params != null) {
+                params.setMargins(120, 120, 120, 120);
+                this.setLayoutParams(params);
+            }
+        }
+
+        @Override
+        public int getColSpan() {
+            return 3;
+        }
+
+        @Override
+        public void notifyOrientationChanged(int orientation) {
+
+        }
+    }
+
+    public class WidgetOptionGPSLabel extends TextView implements WidgetOption {
+
+        public WidgetOptionGPSLabel(Context context) {
+            super(context);
+            initialize();
+        }
+
+        private void initialize() {
+            int padding = 2;
+            setMaxWidth(200);
+            setMaxHeight(64);
+            setPadding(padding, padding, padding, padding);
+            setGravity(Gravity.BOTTOM);
+
+            setTextSize(getResources().getInteger(R.integer.widget_option_label_font_size));
+        }
+
+        @Override
+        public void onFinishInflate() {
+            super.onFinishInflate();
+            GridLayout.LayoutParams params = (GridLayout.LayoutParams) this.getLayoutParams();
+            params.setGravity(Gravity.CENTER);
+        }
+
+        public void setSmall(boolean small) {
+            if (small) {
+                setTextSize(getResources().getInteger(
+                        R.integer.widget_option_label_font_size_small));
+            } else {
+                setTextSize(getResources().getInteger(R.integer.widget_option_label_font_size));
+            }
+        }
+
+        @Override
+        public int getColSpan() {
+            // TODO: Return a different colspan if label larger
+            return 1;
+        }
+
+        @Override
+        public void notifyOrientationChanged(int orientation) {
+
+        }
+    }
 }
+
+
