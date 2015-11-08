@@ -15,7 +15,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.View;
 
 /**
@@ -37,13 +36,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     private LocationManager locationManager;
     private float verticalFOV;
     private float horizontalFOV;
-    private final static Location mountWashington = new Location("manual");
-    float curBearingToMW;
-    static {
-        mountWashington.setLatitude(44.27179d);
-        mountWashington.setLongitude(-71.3039d);
-        mountWashington.setAltitude(1916.5d);
-    }
+    float curBearing;
     private final static Location plazaOeste = new Location("manual");
     static {
         plazaOeste.setLatitude(-34.6344413);
@@ -91,7 +84,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         canvas.drawText(accelData, canvas.getWidth() / 2, canvas.getHeight() / 4, contentPaint);
         canvas.drawText(compassData, canvas.getWidth()/2, canvas.getHeight()/2, contentPaint);
         canvas.drawText(gyroData, canvas.getWidth()/2, (canvas.getHeight()*3)/4, contentPaint);
-        canvas.drawText(""+curBearingToMW, canvas.getWidth()/2, canvas.getHeight()/6, contentPaint);
+        canvas.drawText(""+ curBearing, canvas.getWidth()/2, canvas.getHeight()/6, contentPaint);
 
         boolean gotRotation = SensorManager.getRotationMatrix(rotation,
                 identity, lastAccel, lastComp);
@@ -113,7 +106,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
                 // use roll for screen rotation
                 canvas.rotate((float)(0.0f- Math.toDegrees(orientation[2])));
                 // Translate, but normalize for the FOV of the camera -- basically, pixels per degree, times degrees == pixels
-                float dx = (float) ( (canvas.getWidth()/ horizontalFOV) * (Math.toDegrees(orientation[0])-curBearingToMW));
+                float dx = (float) ( (canvas.getWidth()/ horizontalFOV) * (Math.toDegrees(orientation[0])- curBearing));
                 float dy = (float) ( (canvas.getHeight()/ verticalFOV) * Math.toDegrees(orientation[1])) ;
 
                 // wait to translate the dx so the horizon doesn't get pushed off
@@ -171,7 +164,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
-        curBearingToMW = lastLocation.bearingTo(plazaOeste);
+        curBearing = lastLocation.bearingTo(plazaOeste);
 
     }
 
