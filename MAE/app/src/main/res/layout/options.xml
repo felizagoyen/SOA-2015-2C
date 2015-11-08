@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/optionsView"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    tools:context=".OptionsActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Radius"
+        android:id="@+id/txtRadius"
+        android:textSize="40dp"
+        android:layout_alignLeft="@+id/txtEnabled"
+        android:layout_below="@+id/txtEnabled"
+        android:layout_marginTop="30dp"
+        android:enabled="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:id="@+id/txtRadiusValue"
+        android:textSize="40dp"
+        android:layout_marginRight="15dp"
+        android:layout_alignTop="@+id/txtRadius"
+        android:layout_toRightOf="@+id/txtRadius"
+        android:layout_marginLeft="120dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:id="@+id/txtMinusRadius"
+        android:textSize="100dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="-10dp"
+        android:layout_toRightOf="@+id/txtRadius"
+        android:layout_below="@+id/txtEnabledValue"
+        android:clickable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:id="@+id/txtPlusRadius"
+        android:textSize="65dp"
+        android:textIsSelectable="false"
+        android:layout_below="@+id/txtEnabledValue"
+        android:layout_toRightOf="@+id/txtRadiusValue"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="0dp"
+        android:clickable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:id="@+id/txtRefresh"
+        android:textSize="40dp"
+        android:layout_below="@+id/txtRadius"
+        android:layout_alignLeft="@+id/txtRadius"
+        android:layout_marginTop="30dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:id="@+id/txtRefreshValue"
+        android:textSize="40dp"
+        android:layout_below="@+id/txtMinusRadius"
+        android:layout_alignLeft="@+id/txtRadiusValue" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:id="@+id/txtMinusRefresh"
+        android:textSize="100dp"
+        android:layout_below="@+id/txtRadiusValue"
+        android:layout_alignLeft="@+id/txtMinusRadius"
+        android:layout_marginTop="-10dp"
+        android:clickable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Enabled"
+        android:id="@+id/txtEnabled"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
+        android:textSize="40dp"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OFF"
+        android:id="@+id/txtEnabledValue"
+        android:textSize="40dp"
+        android:layout_above="@+id/txtRadius"
+        android:layout_toRightOf="@+id/txtEnabled"
+        android:layout_marginLeft="75dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:id="@+id/txtPlusRefresh"
+        android:textSize="65dp"
+        android:textIsSelectable="false"
+        android:clickable="true"
+        android:layout_below="@+id/txtPlusRadius"
+        android:layout_toRightOf="@+id/txtRefreshValue"
+        android:layout_marginLeft="15dp" />
+
+</RelativeLayout>

@@ -3,8 +3,6 @@ package ar.com.unlam.mae;
 import android.app.Activity;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 

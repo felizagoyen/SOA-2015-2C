@@ -17,9 +17,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-/**
- * Created by gon on 10/31/2015.
- */
 public class OverlayView extends View implements SensorEventListener, LocationListener {
 
     public static final String DEBUG_TAG = "OverlayView Log";
@@ -121,11 +118,6 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 
                 // draw our point -- we've rotated and translated this to the right spot already
                 canvas.drawCircle(canvas.getWidth()/2, canvas.getHeight()/2, 8.0f, contentPaint);
-
-
-
-
-
         }
 
     }}
