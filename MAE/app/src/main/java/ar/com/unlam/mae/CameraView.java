@@ -16,13 +16,14 @@ import java.util.List;
  */
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     String DEBUG_TAG = "CameraView";
-    Camera camara;
     SurfaceHolder holder;
     Activity myActivity;
+    Camera camera;
 
-    public CameraView(Context context, Activity activity){
+    public CameraView(Context context, Activity activity, Camera camera){
         super(context);
         myActivity = activity;
+        this.camera = camera;
         holder=getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         holder.addCallback((SurfaceHolder.Callback) this);
@@ -30,7 +31,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        camara = Camera.open();
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
         int rotation = myActivity.getWindowManager().getDefaultDisplay().getRotation();
@@ -41,10 +41,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             case Surface.ROTATION_180: degrees = 180; break;
             case Surface.ROTATION_270: degrees = 270; break;
         }
-        camara.setDisplayOrientation((info.orientation - degrees + 360)%360);
+        camera.setDisplayOrientation((info.orientation - degrees + 360)%360);
 
         try{
-            camara.setPreviewDisplay(holder);
+            camera.setPreviewDisplay(holder);
         } catch(IOException e){
             Log.e(DEBUG_TAG, "surfaceCreated exception: ", e);
         }
@@ -52,7 +52,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
-        Camera.Parameters params = camara.getParameters();
+        Camera.Parameters params = camera.getParameters();
         List<Camera.Size> prevSizes = params.getSupportedPreviewSizes();
         for (Camera.Size s : prevSizes){
             if((s.height <= height) && (s.width <= width))
@@ -61,13 +61,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 break;
             }
         }
-        camara.setParameters(params);
-        camara.startPreview();
+        camera.setParameters(params);
+        camera.startPreview();
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        camara.stopPreview();
-        camara.release();
+        camera.stopPreview();
+        camera.release();
     }
 }
