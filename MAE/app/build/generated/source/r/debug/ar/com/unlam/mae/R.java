@@ -14,9 +14,11 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f06000c;
+        public static final int action_settings=0x7f06000e;
         public static final int ar_view_pane=0x7f060000;
+        public static final int btnSearch=0x7f06000c;
         public static final int optionsView=0x7f060001;
+        public static final int txtDistance=0x7f06000d;
         public static final int txtEnabled=0x7f060003;
         public static final int txtEnabledValue=0x7f060006;
         public static final int txtMinusRadius=0x7f060005;

@@ -156,8 +156,8 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
-        curBearing = lastLocation.bearingTo(plazaOeste);
-
+        //curBearing = lastLocation.bearingTo(plazaOeste);
+        curBearing = lastLocation.distanceTo(plazaOeste);
     }
 
     @Override

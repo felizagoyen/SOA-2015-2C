@@ -117,4 +117,28 @@
         android:layout_toRightOf="@+id/txtRefreshValue"
         android:layout_marginLeft="15dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:id="@+id/btnSearch"
+        android:textSize="30dp"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/txtRefreshValue"
+        android:layout_toRightOf="@+id/txtRefresh"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="-20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/txtDistance"
+        android:layout_alignParentTop="false"
+        android:layout_alignRight="@+id/btnSearch"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/btnSearch" />
+
 </RelativeLayout>
