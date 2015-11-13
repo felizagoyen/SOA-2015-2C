@@ -34,6 +34,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     private float verticalFOV;
     private float horizontalFOV;
     float curBearing;
+    String distanceToPoi = null;
     private final static Location plazaOeste = new Location("manual");
     static {
         plazaOeste.setLatitude(-34.6344413);
@@ -67,7 +68,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 
         Log.v(DEBUG_TAG, "El mejor proveedor es: " + best);
 
-        locationManager.requestLocationUpdates(best, 50, 0, this);
+        locationManager.requestLocationUpdates(best, 500, 0, this);
     }
 
     @Override
@@ -76,13 +77,15 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 
         Paint contentPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         contentPaint.setTextAlign(Paint.Align.CENTER);
-        contentPaint.setTextSize(20);
-        contentPaint.setColor(Color.RED);
-        canvas.drawText(accelData, canvas.getWidth() / 2, canvas.getHeight() / 4, contentPaint);
-        canvas.drawText(compassData, canvas.getWidth()/2, canvas.getHeight()/2, contentPaint);
-        canvas.drawText(gyroData, canvas.getWidth()/2, (canvas.getHeight()*3)/4, contentPaint);
-        canvas.drawText(""+ curBearing, canvas.getWidth()/2, canvas.getHeight()/6, contentPaint);
-
+        contentPaint.setTextSize(80);
+        contentPaint.setColor(Color.CYAN);
+//      canvas.drawText(accelData, canvas.getWidth() / 2, canvas.getHeight() / 4, contentPaint);
+//      canvas.drawText(compassData, canvas.getWidth()/2, canvas.getHeight()/2, contentPaint);
+//      canvas.drawText(gyroData, canvas.getWidth()/2, (canvas.getHeight()*3)/4, contentPaint);
+//      canvas.drawText(""+ curBearing, canvas.getWidth()/2, canvas.getHeight()/6, contentPaint);
+        if(distanceToPoi != null) {
+            canvas.drawText("" + distanceToPoi, canvas.getWidth() / 2, canvas.getHeight() / 6, contentPaint);
+        }
         boolean gotRotation = SensorManager.getRotationMatrix(rotation,
                 identity, lastAccel, lastComp);
         if (gotRotation) {
@@ -111,7 +114,6 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 
                 // make our line big enough to draw regardless of rotation and translation
                 canvas.drawLine(0f - canvas.getHeight(), canvas.getHeight()/2, canvas.getWidth()+canvas.getHeight(), canvas.getHeight()/2, contentPaint);
-
 
                 // now translate the dx
                 canvas.translate(0.0f-dx, 0.0f);
@@ -156,8 +158,17 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
-        //curBearing = lastLocation.bearingTo(plazaOeste);
-        curBearing = lastLocation.distanceTo(plazaOeste);
+        curBearing = lastLocation.bearingTo(plazaOeste);
+        String formatDistance;
+        double distanceNumber = lastLocation.distanceTo(plazaOeste);
+        if(distanceNumber > 1000) {
+            formatDistance = "%.2f km";
+            distanceNumber /= 1000;
+        } else {
+            formatDistance = "%.2f m";
+        }
+        distanceToPoi = String.format(formatDistance, distanceNumber);
+        Log.v(DEBUG_TAG, "Distance: " + distanceToPoi);
     }
 
     @Override

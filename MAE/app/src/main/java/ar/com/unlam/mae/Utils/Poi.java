@@ -1,22 +1,20 @@
 package ar.com.unlam.mae.Utils;
 
-import java.math.BigDecimal;
-
 public class Poi {
 
     private String name;
     private String description;
-    private BigDecimal latitude;
-    private BigDecimal longitude;
-    private BigDecimal altitude;
+    private Double latitude;
+    private Double longitude;
+    private Double altitude;
     private Double distance;
 
-    public Poi(String name, String description, BigDecimal latitude, BigDecimal longitude, BigDecimal altitude) {
+    public Poi(String name, String description, Double latitude, Double longitude, Double altitude) {
         this.name = name;
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.latitude = altitude;
+        this.altitude = altitude;
     }
 
     public String getName() {
@@ -27,15 +25,15 @@ public class Poi {
         return description;
     }
 
-    public BigDecimal getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public BigDecimal getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public BigDecimal getAltitude() {
+    public Double getAltitude() {
         return altitude;
     }
 

@@ -12,10 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.List;
-
 import ar.com.unlam.mae.Service.PoiService;
 import ar.com.unlam.mae.Utils.OptionsLocation;
 import ar.com.unlam.mae.Utils.Poi;
@@ -67,6 +63,7 @@ public class OptionsActivity extends Activity implements View.OnClickListener, L
         plusRadius.setOnClickListener(this);
         minusRefreshTime.setOnClickListener(this);
         plusRefreshTime.setOnClickListener(this);
+        searchButton.setOnClickListener(this);
 
         radiusValue.setText(String.valueOf(optionsLocation.getRadius()));
         refreshTimeValue.setText(String.valueOf(optionsLocation.getRefreshTime()));
@@ -77,7 +74,7 @@ public class OptionsActivity extends Activity implements View.OnClickListener, L
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
         String bestProvider = locationManager.getBestProvider(criteria, true);
-        locationManager.requestLocationUpdates(bestProvider, 5000, 0, this);
+        locationManager.requestLocationUpdates(bestProvider, 500, 0, this);
 
         context = this;
     }
@@ -119,8 +116,15 @@ public class OptionsActivity extends Activity implements View.OnClickListener, L
                 setEnabled();
             }
         } else if(v == searchButton) {
-            //setPoi();
-            //distance.setText(Double.toString(poi.getDistance()));
+            String formatDistance;
+            double distanceNumber = poi.getDistance();
+            if(distanceNumber > 1000) {
+                formatDistance = "%.2f km";
+                distanceNumber /= 1000;
+            } else {
+                formatDistance = "%.2f m";
+            }
+            distance.setText(String.format(formatDistance, distanceNumber));
         }
     }
 
@@ -150,16 +154,16 @@ public class OptionsActivity extends Activity implements View.OnClickListener, L
 
     private void setPoi(Location location) {
         Location poiLocation = new Location("manual");
-        poi = PoiService.getInstance().getPoi(context).get(0);
-        poiLocation.setAltitude(poi.getAltitude().doubleValue());
-        poiLocation.setLatitude(poi.getLatitude().doubleValue());
-        poiLocation.setLongitude(poi.getLongitude().doubleValue());
+        poi = PoiService.getInstance().getPoi().get(0);
+        poiLocation.setAltitude(poi.getAltitude());
+        poiLocation.setLatitude(poi.getLatitude());
+        poiLocation.setLongitude(poi.getLongitude());
         poi.setDistance(location.distanceTo(poiLocation));
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        //setPoi(location);
+        setPoi(location);
     }
 
     @Override

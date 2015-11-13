@@ -1,15 +1,5 @@
 package ar.com.unlam.mae.Service;
 
-import android.content.Context;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,29 +16,12 @@ public class PoiService {
         return instance;
     }
 
-    public List<Poi> getPoi(Context context) {
+    public List<Poi> getPoi() {
         List<Poi> poi = new ArrayList<>();
-        try {
-            InputStream is = context.getAssets().open("pointsOfInterest.json");
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String currentJSONString;
 
-            while( (currentJSONString = br.readLine()) != null ) {
-                JSONObject json = new JSONObject(currentJSONString);
-                poi.add(convertPoi(json));
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        poi.add(new Poi("Plaza Oeste", "Shopping", -34.6344413, -58.6318342, 1916.5));
+
         return poi;
     }
 
-    private Poi convertPoi(JSONObject json) throws Exception {
-        String name = json.getString("name");
-        String description = json.getString("description");
-        BigDecimal latitude = BigDecimal.valueOf(json.getDouble("latitude"));
-        BigDecimal longitude = BigDecimal.valueOf(json.getDouble("longitude"));
-        BigDecimal altitude = BigDecimal.valueOf(json.getDouble("altitude"));
-        return new Poi(name, description, latitude, longitude, altitude);
-    }
 }
