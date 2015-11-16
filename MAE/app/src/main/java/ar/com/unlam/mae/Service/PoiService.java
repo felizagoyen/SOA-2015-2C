@@ -1,5 +1,13 @@
 package ar.com.unlam.mae.Service;
 
+import android.content.Context;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +24,46 @@ public class PoiService {
         return instance;
     }
 
-    public List<Poi> getPoi() {
+    public List<Poi> getPoi(Context context) {
         List<Poi> poi = new ArrayList<Poi>();
-
-        poi.add(new Poi("Esquina", "Shopping", -34.7046482, -58.5813725, 17.0));
-        poi.add(new Poi("Plaza Oeste", "Shopping", -34.6344413, -58.6318342, 1916.5));
-
+        String json = readFromFile(context);
+        try {
+            JSONObject reader = new JSONObject(json);
+            JSONArray pois = reader.getJSONArray("pois");
+            for(int i = 0; i < pois.length(); i++) {
+                JSONObject p = pois.getJSONObject(i);
+                Poi singlePoi = new Poi(p.getString("name"),
+                                        p.getString("category"),
+                                        p.getDouble("latitude"),
+                                        p.getDouble("longitude"),
+                                        p.getDouble("altitude"));
+                poi.add(singlePoi);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return poi;
+    }
+
+    /*
+        JSONObject jsonObj = new JSONObject();
+        jsonObj.put("name", person.getName()); // Set the first name/pair
+        jsonObj.put("surname", person.getSurname());
+     */
+
+   private String readFromFile(Context context) {
+        String json = null;
+        try {
+            InputStream is = context.getResources().getAssets().open("poi.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return json;
     }
 
 }

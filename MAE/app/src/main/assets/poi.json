@@ -1,0 +1,18 @@
+{
+  "pois" : [
+    {
+      "name": "Plaza Oeste",
+      "category":  "Shopping",
+      "latitude":  -34.6344413,
+      "longitude": -58.6318342,
+      "altitude": -58.6318342
+    },
+    {
+      "name": "Esquina",
+      "category": "Others",
+      "latitude": 123,
+      "longitude": 123,
+      "altitude": 123
+    }
+  ]
+}

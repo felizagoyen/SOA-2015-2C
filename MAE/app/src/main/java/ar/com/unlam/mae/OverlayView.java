@@ -1,6 +1,8 @@
 package ar.com.unlam.mae;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -45,6 +47,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         plazaOeste.setLongitude(-58.6318342);
         plazaOeste.setAltitude(1916.5d);
     };
+    Bitmap drawIcon;
 
     public OverlayView(Context context, Camera camera) {
         super(context);
@@ -63,12 +66,12 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         horizontalFOV = params.getHorizontalViewAngle();
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        drawIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_poi);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         Paint contentPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         contentPaint.setTextAlign(Paint.Align.CENTER);
         contentPaint.setTextSize(80);
@@ -77,10 +80,6 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 //      canvas.drawText(compassData, canvas.getWidth()/2, canvas.getHeight()/2, contentPaint);
 //      canvas.drawText(gyroData, canvas.getWidth()/2, (canvas.getHeight()*3)/4, contentPaint);
 //      canvas.drawText(""+ curBearing, canvas.getWidth()/2, canvas.getHeight()/6, contentPaint);
-
-        if(distanceToPoi != null) {
-            canvas.drawText(distanceToPoi, canvas.getWidth() / 2, canvas.getHeight() / 6, contentPaint);
-        }
 
         boolean gotRotation = SensorManager.getRotationMatrix(rotation,
                 identity, lastAccel, lastComp);
@@ -100,24 +99,21 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
                 SensorManager.getOrientation(cameraRotation, orientation);
 
                 // use roll for screen rotation
-                canvas.rotate((float)(0.0f- Math.toDegrees(orientation[2])));
+                canvas.rotate((float) (0.0f - Math.toDegrees(orientation[2])));
                 // Translate, but normalize for the FOV of the camera -- basically, pixels per degree, times degrees == pixels
-                float dx = (float) ( (canvas.getWidth()/ horizontalFOV) * (Math.toDegrees(orientation[0])- curBearing));
-                float dy = (float) ( (canvas.getHeight()/ verticalFOV) * Math.toDegrees(orientation[1])) ;
+                float dx = (float) ( (canvas.getWidth() / horizontalFOV) * (Math.toDegrees(orientation[0]) - curBearing));
+                float dy = (float) ( (canvas.getHeight() / verticalFOV) * Math.toDegrees(orientation[1])) ;
 
-                // wait to translate the dx so the horizon doesn't get pushed off
-                canvas.translate(0.0f, 0.0f - dy);
-
-                // make our line big enough to draw regardless of rotation and translation
-                canvas.drawLine(0f - canvas.getHeight(), canvas.getHeight() / 2, canvas.getWidth() + canvas.getHeight(), canvas.getHeight() / 2, contentPaint);
-
-                // now translate the dx
-                canvas.translate(0.0f - dx, 0.0f);
+                canvas.translate(0.0f - dx, 0.0f - dy);
 
                 // draw our point -- we've rotated and translated this to the right spot already
-                canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, contentPaint);
+                //canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 40.0f, contentPaint);
 
-        }
+                if(distanceToPoi != null) {
+                    canvas.drawText(distanceToPoi, canvas.getWidth() / 2, canvas.getHeight() / 6, contentPaint);
+                    canvas.drawBitmap(drawIcon, canvas.getWidth() / 2, canvas.getHeight() / 5, null);
+                }
+           }
 
     }}
 
@@ -154,7 +150,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     public void onLocationChanged(Location location) {
         lastLocation = location;
 
-        Poi poi = PoiService.getInstance().getPoi().get(0);
+        Poi poi = PoiService.getInstance().getPoi(getContext()).get(0);
         Location poiLocation = new Location("manual");
         poiLocation.setLatitude(poi.getLatitude());
         poiLocation.setLongitude(poi.getLongitude());
@@ -169,7 +165,10 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         } else {
             formatDistance = "%.2f m";
         }
+
         distanceToPoi = String.format(formatDistance, distanceNumber);
+        Log.v("distance: ", distanceToPoi);
+        Log.v("curBearing: ", String.valueOf(curBearing));
     }
 
     @Override
@@ -201,9 +200,9 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 
 
     private float[] lowPass( float[] input, float[] output ) {
-        if ( output == null ) return input;
-        for ( int i=0; i<input.length; i++ ) {
-            output[i] = output[i] + 0.25f * (input[i] - output[i]);
+        if (output == null) return input;
+        for (int i = 0; i < input.length; i++) {
+            output[i] = output[i] + 0.1f * (input[i] - output[i]);
         }
         return output;
     }
