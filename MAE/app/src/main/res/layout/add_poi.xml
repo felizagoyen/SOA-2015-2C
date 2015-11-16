@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Name"
+            android:id="@+id/txtName"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentStart="false"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/eTxtName"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/txtName"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Category"
+            android:id="@+id/textView2"
+            android:layout_below="@+id/eTxtName"
+            android:layout_alignStart="@+id/txtName"
+            android:layout_marginTop="15dp" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinnerCategory"
+            android:layout_below="@+id/textView2"
+            android:layout_alignStart="@+id/eTxtName"
+            android:layout_marginTop="25dp"
+            android:layout_alignEnd="@+id/eTxtName"
+            android:spinnerMode="dialog" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Poi"
+            android:id="@+id/buttonAdd"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/spinnerCategory"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+</LinearLayout>

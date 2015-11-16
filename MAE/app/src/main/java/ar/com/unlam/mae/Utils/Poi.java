@@ -3,15 +3,15 @@ package ar.com.unlam.mae.Utils;
 public class Poi {
 
     private String name;
-    private String description;
+    private String category;
     private Double latitude;
     private Double longitude;
     private Double altitude;
     private Double distance;
 
-    public Poi(String name, String description, Double latitude, Double longitude, Double altitude) {
+    public Poi(String name, String cagegory, Double latitude, Double longitude, Double altitude) {
         this.name = name;
-        this.description = description;
+        this.category = cagegory;
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
@@ -21,8 +21,8 @@ public class Poi {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCategory() {
+        return category;
     }
 
     public Double getLatitude() {

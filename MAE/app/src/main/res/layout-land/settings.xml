@@ -11,10 +11,9 @@
         android:text="Radius"
         android:id="@+id/txtRadius"
         android:textSize="40dp"
-        android:layout_alignLeft="@+id/txtEnabled"
-        android:layout_below="@+id/txtEnabled"
         android:layout_marginTop="30dp"
-        android:enabled="true" />
+        android:enabled="true"
+        android:layout_marginLeft="100dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,7 +35,6 @@
         android:layout_marginLeft="80dp"
         android:layout_marginTop="-10dp"
         android:layout_toRightOf="@+id/txtRadius"
-        android:layout_below="@+id/txtEnabledValue"
         android:clickable="true" />
 
     <TextView
@@ -46,7 +44,6 @@
         android:id="@+id/txtPlusRadius"
         android:textSize="65dp"
         android:textIsSelectable="false"
-        android:layout_below="@+id/txtEnabledValue"
         android:layout_toRightOf="@+id/txtRadiusValue"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="0dp"
@@ -85,29 +82,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Enabled"
-        android:id="@+id/txtEnabled"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="40dp"
-        android:textSize="40dp"
-        android:textColor="#FFFFFF" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OFF"
-        android:id="@+id/txtEnabledValue"
-        android:textSize="40dp"
-        android:layout_above="@+id/txtRadius"
-        android:layout_toRightOf="@+id/txtEnabled"
-        android:layout_marginLeft="75dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="+"
         android:id="@+id/txtPlusRefresh"
         android:textSize="65dp"
@@ -120,14 +94,14 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"
-        android:id="@+id/btnSearch"
+        android:text="Add New Poi"
+        android:id="@+id/btnNewPoi"
         android:textSize="30dp"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/txtRefreshValue"
         android:layout_toRightOf="@+id/txtRefresh"
         android:layout_marginTop="50dp"
-        android:layout_marginLeft="-20dp" />
+        android:layout_marginLeft="-60dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -135,11 +109,11 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/txtDistance"
         android:layout_alignParentTop="false"
-        android:layout_alignRight="@+id/btnSearch"
+        android:layout_alignRight="@+id/btnNewPoi"
         android:layout_marginTop="50dp"
         android:layout_alignParentEnd="false"
         android:layout_alignParentStart="false"
-        android:layout_below="@+id/btnSearch"
+        android:layout_below="@+id/btnNewPoi"
         android:text="Distance" />
 
 </RelativeLayout>

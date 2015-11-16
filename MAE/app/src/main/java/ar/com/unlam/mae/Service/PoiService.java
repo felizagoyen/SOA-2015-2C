@@ -17,8 +17,9 @@ public class PoiService {
     }
 
     public List<Poi> getPoi() {
-        List<Poi> poi = new ArrayList<>();
+        List<Poi> poi = new ArrayList<Poi>();
 
+        poi.add(new Poi("Esquina", "Shopping", -34.7046482, -58.5813725, 17.0));
         poi.add(new Poi("Plaza Oeste", "Shopping", -34.6344413, -58.6318342, 1916.5));
 
         return poi;

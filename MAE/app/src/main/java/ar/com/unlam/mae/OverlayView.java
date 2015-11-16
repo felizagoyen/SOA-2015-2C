@@ -17,6 +17,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import ar.com.unlam.mae.Service.PoiService;
+import ar.com.unlam.mae.Utils.Poi;
+import ar.com.unlam.mae.Utils.SettingsLocation;
+
 public class OverlayView extends View implements SensorEventListener, LocationListener {
 
     public static final String DEBUG_TAG = "OverlayView Log";
@@ -50,7 +54,6 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         Sensor compassSensor = sensors.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         Sensor gyroSensor = sensors.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-
         boolean isAccelAvailable = sensors.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
         boolean isCompassAvailable = sensors.registerListener(this, compassSensor, SensorManager.SENSOR_DELAY_NORMAL);
         boolean isGyroAvailable = sensors.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -60,15 +63,6 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         horizontalFOV = params.getHorizontalViewAngle();
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
-
-        String best = locationManager.getBestProvider(criteria, true);
-
-        Log.v(DEBUG_TAG, "El mejor proveedor es: " + best);
-
-        locationManager.requestLocationUpdates(best, 500, 0, this);
     }
 
     @Override
@@ -83,9 +77,11 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 //      canvas.drawText(compassData, canvas.getWidth()/2, canvas.getHeight()/2, contentPaint);
 //      canvas.drawText(gyroData, canvas.getWidth()/2, (canvas.getHeight()*3)/4, contentPaint);
 //      canvas.drawText(""+ curBearing, canvas.getWidth()/2, canvas.getHeight()/6, contentPaint);
+
         if(distanceToPoi != null) {
-            canvas.drawText("" + distanceToPoi, canvas.getWidth() / 2, canvas.getHeight() / 6, contentPaint);
+            canvas.drawText(distanceToPoi, canvas.getWidth() / 2, canvas.getHeight() / 6, contentPaint);
         }
+
         boolean gotRotation = SensorManager.getRotationMatrix(rotation,
                 identity, lastAccel, lastComp);
         if (gotRotation) {
@@ -110,16 +106,17 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
                 float dy = (float) ( (canvas.getHeight()/ verticalFOV) * Math.toDegrees(orientation[1])) ;
 
                 // wait to translate the dx so the horizon doesn't get pushed off
-                canvas.translate(0.0f, 0.0f-dy);
+                canvas.translate(0.0f, 0.0f - dy);
 
                 // make our line big enough to draw regardless of rotation and translation
-                canvas.drawLine(0f - canvas.getHeight(), canvas.getHeight()/2, canvas.getWidth()+canvas.getHeight(), canvas.getHeight()/2, contentPaint);
+                canvas.drawLine(0f - canvas.getHeight(), canvas.getHeight() / 2, canvas.getWidth() + canvas.getHeight(), canvas.getHeight() / 2, contentPaint);
 
                 // now translate the dx
-                canvas.translate(0.0f-dx, 0.0f);
+                canvas.translate(0.0f - dx, 0.0f);
 
                 // draw our point -- we've rotated and translated this to the right spot already
-                canvas.drawCircle(canvas.getWidth()/2, canvas.getHeight()/2, 8.0f, contentPaint);
+                canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, contentPaint);
+
         }
 
     }}
@@ -127,23 +124,21 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     @Override
     public void onSensorChanged(SensorEvent event) {
         StringBuilder msg = new StringBuilder(event.sensor.getName()).append(" ");
-        for(float value: event.values)
-        {
+        for(float value: event.values) {
             msg.append("[").append(value).append("]");
         }
 
-        switch(event.sensor.getType())
-        {
+        switch(event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 accelData = msg.toString();
-                lastAccel = event.values;
+                lastAccel = lowPass(event.values.clone(), lastAccel);
                 break;
             case Sensor.TYPE_GYROSCOPE:
                 gyroData = msg.toString();
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
                 compassData = msg.toString();
-                lastComp = event.values;
+                lastComp = lowPass(event.values.clone(), lastComp);
                 break;
         }
 
@@ -158,9 +153,16 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
-        curBearing = lastLocation.bearingTo(plazaOeste);
+
+        Poi poi = PoiService.getInstance().getPoi().get(0);
+        Location poiLocation = new Location("manual");
+        poiLocation.setLatitude(poi.getLatitude());
+        poiLocation.setLongitude(poi.getLongitude());
+        poiLocation.setAltitude(poi.getAltitude());
+
+        curBearing = lastLocation.bearingTo(poiLocation);
         String formatDistance;
-        double distanceNumber = lastLocation.distanceTo(plazaOeste);
+        double distanceNumber = lastLocation.distanceTo(poiLocation);
         if(distanceNumber > 1000) {
             formatDistance = "%.2f km";
             distanceNumber /= 1000;
@@ -168,7 +170,6 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
             formatDistance = "%.2f m";
         }
         distanceToPoi = String.format(formatDistance, distanceNumber);
-        Log.v(DEBUG_TAG, "Distance: " + distanceToPoi);
     }
 
     @Override
@@ -184,5 +185,26 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    public void pauseGPS() {
+        locationManager.removeUpdates(this);
+    }
+
+    public void resumeGPS() {
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
+        String best = locationManager.getBestProvider(criteria, true);
+        locationManager.requestLocationUpdates(best, SettingsLocation.getInstance().getRefreshTime() * 1000, 0, this);
+    }
+
+
+    private float[] lowPass( float[] input, float[] output ) {
+        if ( output == null ) return input;
+        for ( int i=0; i<input.length; i++ ) {
+            output[i] = output[i] + 0.25f * (input[i] - output[i]);
+        }
+        return output;
     }
 }

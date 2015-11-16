@@ -11,9 +11,6 @@ import android.view.SurfaceView;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by gon on 10/31/2015.
- */
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     String DEBUG_TAG = "CameraView";
     SurfaceHolder holder;
@@ -41,7 +38,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             case Surface.ROTATION_180: degrees = 180; break;
             case Surface.ROTATION_270: degrees = 270; break;
         }
-        camera.setDisplayOrientation((info.orientation - degrees + 360)%360);
+        camera.setDisplayOrientation((info.orientation - degrees + 360) % 360);
 
         try{
             camera.setPreviewDisplay(holder);
@@ -67,7 +64,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        this.getHolder().removeCallback(this);
+        camera.setPreviewCallback(null);
         camera.stopPreview();
+        camera.setPreviewCallback(null);
         camera.release();
     }
 }
