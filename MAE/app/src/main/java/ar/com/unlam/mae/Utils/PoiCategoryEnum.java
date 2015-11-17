@@ -1,9 +1,14 @@
 package ar.com.unlam.mae.Utils;
 
 public enum PoiCategoryEnum {
-    Estacionamiento,
-    Resturant,
-    Bar,
-    Biblioteca,
-    Departamento;
+    Airport,
+    Bank,
+    Church,
+    Hospital,
+    Library,
+    Mall,
+    Others,
+    Parking,
+    Restaurant,
+    University
 }

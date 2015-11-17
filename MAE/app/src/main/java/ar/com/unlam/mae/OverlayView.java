@@ -16,7 +16,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import ar.com.unlam.mae.Service.PoiService;
@@ -25,7 +24,6 @@ import ar.com.unlam.mae.Utils.SettingsLocation;
 
 public class OverlayView extends View implements SensorEventListener, LocationListener {
 
-    public static final String DEBUG_TAG = "OverlayView Log";
     String accelData = "Accelerometer Data";
     String compassData = "Compass Data";
     String gyroData = "Gyro Data";
@@ -47,7 +45,17 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         plazaOeste.setLongitude(-58.6318342);
         plazaOeste.setAltitude(1916.5d);
     };
-    Bitmap drawIcon;
+    Bitmap drawIconAirport;
+    Bitmap drawIconBank;
+    Bitmap drawIconChurch;
+    Bitmap drawIconHospital;
+    Bitmap drawIconLibrary;
+    Bitmap drawIconMall;
+    Bitmap drawIconOther;
+    Bitmap drawIconParking;
+    Bitmap drawIconRestaurant;
+    Bitmap drawIconUniversity;
+
 
     public OverlayView(Context context, Camera camera) {
         super(context);
@@ -66,7 +74,17 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         horizontalFOV = params.getHorizontalViewAngle();
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        drawIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_poi);
+
+        drawIconAirport = BitmapFactory.decodeResource(getResources(), R.drawable.ic_airport);
+        drawIconBank = BitmapFactory.decodeResource(getResources(), R.drawable.ic_bank);
+        drawIconChurch = BitmapFactory.decodeResource(getResources(), R.drawable.ic_church);;
+        drawIconHospital = BitmapFactory.decodeResource(getResources(), R.drawable.ic_hospital);
+        drawIconLibrary = BitmapFactory.decodeResource(getResources(), R.drawable.ic_library);
+        drawIconMall = BitmapFactory.decodeResource(getResources(), R.drawable.ic_mall);
+        drawIconOther = BitmapFactory.decodeResource(getResources(), R.drawable.ic_others);
+        drawIconParking = BitmapFactory.decodeResource(getResources(), R.drawable.ic_parking);
+        drawIconRestaurant = BitmapFactory.decodeResource(getResources(), R.drawable.ic_restaurant);
+        drawIconUniversity = BitmapFactory.decodeResource(getResources(), R.drawable.ic_university);
     }
 
     @Override
@@ -80,6 +98,15 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 //      canvas.drawText(compassData, canvas.getWidth()/2, canvas.getHeight()/2, contentPaint);
 //      canvas.drawText(gyroData, canvas.getWidth()/2, (canvas.getHeight()*3)/4, contentPaint);
 //      canvas.drawText(""+ curBearing, canvas.getWidth()/2, canvas.getHeight()/6, contentPaint);
+
+        canvas.drawBitmap(drawIconChurch, canvas.getWidth() / 2, canvas.getHeight() / 8, null);
+        canvas.drawBitmap(drawIconBank, canvas.getWidth() / 2, canvas.getHeight() / 6, null);
+        canvas.drawBitmap(drawIconHospital, canvas.getWidth() / 2, canvas.getHeight() / 4, null);
+        canvas.drawBitmap(drawIconRestaurant, canvas.getWidth() / 2, canvas.getHeight() / 2, null);
+        canvas.drawBitmap(drawIconAirport, canvas.getWidth() / 4, canvas.getHeight() / 8, null);
+        canvas.drawBitmap(drawIconMall, canvas.getWidth() / 4, canvas.getHeight() / 6, null);
+        canvas.drawBitmap(drawIconParking, canvas.getWidth() / 4, canvas.getHeight() / 4, null);
+        canvas.drawBitmap(drawIconOther, canvas.getWidth() / 4, canvas.getHeight() / 2, null);
 
         boolean gotRotation = SensorManager.getRotationMatrix(rotation,
                 identity, lastAccel, lastComp);
@@ -111,7 +138,6 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 
                 if(distanceToPoi != null) {
                     canvas.drawText(distanceToPoi, canvas.getWidth() / 2, canvas.getHeight() / 6, contentPaint);
-                    canvas.drawBitmap(drawIcon, canvas.getWidth() / 2, canvas.getHeight() / 5, null);
                 }
            }
 
@@ -167,8 +193,6 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         }
 
         distanceToPoi = String.format(formatDistance, distanceNumber);
-        Log.v("distance: ", distanceToPoi);
-        Log.v("curBearing: ", String.valueOf(curBearing));
     }
 
     @Override
