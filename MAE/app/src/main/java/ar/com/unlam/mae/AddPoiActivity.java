@@ -33,6 +33,7 @@ public class AddPoiActivity extends Activity implements LocationListener {
     private ArrayAdapter<String> adapter;
     private LocationManager locationManager;
     private LocationListener locationListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

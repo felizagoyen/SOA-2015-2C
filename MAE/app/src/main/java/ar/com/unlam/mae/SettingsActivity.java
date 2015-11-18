@@ -59,7 +59,7 @@ public class SettingsActivity extends Activity {
             if (requestCode == 0) {
                 settingsLocation.setRadius(data.getIntExtra("Radius", 5));
             } else if (requestCode == 1) {
-                settingsLocation.setRadius(data.getIntExtra("Refresh", 5));
+                settingsLocation.setRefreshTime(data.getIntExtra("Refresh", 5));
             }
         }
     }

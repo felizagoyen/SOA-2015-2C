@@ -24,10 +24,19 @@ public class PoiService {
     private PoiService() {
     }
 
+    /**
+     * Return the instances
+     * @return instance
+     */
     public static PoiService getInstance() {
         return instance;
     }
 
+    /**
+     * Get the pois from the Internal Storage. If don't exist it, take the pois from assets
+     * @param context
+     * @return return list of Poi
+     */
     public ArrayList<Poi> getPoi(Context context) {
         ArrayList<Poi> poi = new ArrayList<Poi>();
         try {
@@ -48,6 +57,12 @@ public class PoiService {
         return poi;
     }
 
+    /**
+     * Write new poi to the Internal Storage
+     * @param poi New Poi
+     * @param context
+     * @return Operation was success
+     * */
     public Boolean setPoi(Poi poi, Context context) {
         try {
             JSONObject reader = readJsonFromFile(context);
@@ -63,6 +78,12 @@ public class PoiService {
         }
     }
 
+    /**
+     * Read file from Internal Storage or assets if the file on Internal Storage don't exist
+     * @param context
+     * @return
+     * @throws Exception
+     */
     private JSONObject readJsonFromFile(Context context) throws Exception {
         String json = null;
         try {
@@ -88,6 +109,12 @@ public class PoiService {
         return new JSONObject(json);
     }
 
+    /**
+     * Create a new Poi as JsonObject
+     * @param poi
+     * @return
+     * @throws Exception
+     */
     private JSONObject getNewJsonObjectPoi(Poi poi) throws Exception {
         JSONObject newPoi = new JSONObject();
         newPoi.put("name", poi.getName());
@@ -98,6 +125,12 @@ public class PoiService {
         return newPoi;
     }
 
+    /**
+     * Write all poi in Internal Storage
+     * @param json
+     * @param context
+     * @throws Exception
+     */
     private void writeJsonInFile(JSONObject json, Context context) throws Exception {
         FileOutputStream fos = context.openFileOutput("poi.json", Context.MODE_PRIVATE);
         fos.write(json.toString().getBytes());

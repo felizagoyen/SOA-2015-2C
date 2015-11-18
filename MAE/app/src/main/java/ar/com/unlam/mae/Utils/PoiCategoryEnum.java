@@ -7,8 +7,8 @@ public enum PoiCategoryEnum {
     Hospital,
     Library,
     Mall,
-    Others,
     Parking,
     Restaurant,
-    University
+    University,
+    Others
 }
