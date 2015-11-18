@@ -13,11 +13,12 @@ import android.widget.FrameLayout;
 public class MainActivity extends Activity {
     private OverlayView arContent;
     private FrameLayout camViewPane;
-
+    Camera camera;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        camera = null;
     }
 
     @Override
@@ -30,13 +31,21 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         camViewPane = (FrameLayout) findViewById(R.id.ar_view_pane);
-        Camera camera = Camera.open();
-        CameraView camView = new CameraView(getApplicationContext(), this, camera);
-        camViewPane.addView(camView);
+        if(camera == null) {
+            Camera camera = Camera.open();
+            CameraView camView = new CameraView(getApplicationContext(), this, camera);
+            camViewPane.addView(camView);
 
-        arContent = new OverlayView(getApplicationContext(), camera);
-        camViewPane.addView(arContent);
-        arContent.resumeGPS();
+            arContent = new OverlayView(getApplicationContext(), camera);
+            camViewPane.addView(arContent);
+            arContent.resumeGPS();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        camera = null;
     }
 
     @Override
