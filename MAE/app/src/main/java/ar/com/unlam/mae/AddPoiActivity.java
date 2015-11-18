@@ -66,6 +66,7 @@ public class AddPoiActivity extends Activity implements LocationListener {
             public void onClick(View v) {
                 if(!"".equals(eTxtName.getText().toString()) && !"Category".equals(listCategory.get(0))) {
                     buttonAdd.setEnabled(false);
+                    buttonAdd.setText(String.valueOf("Adding Poi..."));
                     Criteria criteria = new Criteria();
                     criteria.setAccuracy(Criteria.ACCURACY_FINE);
                     criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
