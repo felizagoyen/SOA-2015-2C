@@ -18,6 +18,17 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        arContent.pauseGPS();
+     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         camViewPane = (FrameLayout) findViewById(R.id.ar_view_pane);
         Camera camera = Camera.open();
         CameraView camView = new CameraView(getApplicationContext(), this, camera);
@@ -25,20 +36,7 @@ public class MainActivity extends Activity {
 
         arContent = new OverlayView(getApplicationContext(), camera);
         camViewPane.addView(arContent);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        arContent.pauseGPS();
-        Log.v("asd", "onPause");
-     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         arContent.resumeGPS();
-        Log.v("asd", "onResume");
     }
 
     @Override

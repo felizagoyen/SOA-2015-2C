@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MAE</string>
-    <string name="title_activity_main">GPS LOCATION</string>
+    <string name="app_name">POI LOCATION</string>
+    <string name="title_activity_main">POI LOCATION</string>
     <string name="action_settings">Settings</string>
 
 </resources>

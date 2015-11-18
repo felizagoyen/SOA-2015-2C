@@ -179,6 +179,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
         String best = locationManager.getBestProvider(criteria, true);
         locationManager.requestLocationUpdates(best, SettingsLocation.getInstance().getRefreshTime() * 1000, 0, this);
+
     }
 
     /**
