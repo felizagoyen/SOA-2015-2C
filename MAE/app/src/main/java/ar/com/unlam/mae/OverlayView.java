@@ -16,7 +16,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+
+import java.util.ArrayList;
 
 import ar.com.unlam.mae.Service.PoiService;
 import ar.com.unlam.mae.Utils.Poi;
@@ -24,6 +27,8 @@ import ar.com.unlam.mae.Utils.SettingsLocation;
 
 public class OverlayView extends View implements SensorEventListener, LocationListener {
 
+    ArrayList<Poi> poiToDraw;
+    ArrayList<Boolean> poiIsInRadius = new ArrayList<Boolean>();
     String accelData = "Accelerometer Data";
     String compassData = "Compass Data";
     String gyroData = "Gyro Data";
@@ -38,7 +43,8 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     private float verticalFOV;
     private float horizontalFOV;
     float curBearing;
-    String distanceToPoi = null;
+    private SettingsLocation settingsLocation = SettingsLocation.getInstance();
+
     private final static Location plazaOeste = new Location("manual");
     static {
         plazaOeste.setLatitude(-34.6344413);
@@ -85,6 +91,7 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         drawIconParking = BitmapFactory.decodeResource(getResources(), R.drawable.ic_parking);
         drawIconRestaurant = BitmapFactory.decodeResource(getResources(), R.drawable.ic_restaurant);
         drawIconUniversity = BitmapFactory.decodeResource(getResources(), R.drawable.ic_university);
+
     }
 
     @Override
@@ -135,10 +142,6 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
 
                 // draw our point -- we've rotated and translated this to the right spot already
                 //canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 40.0f, contentPaint);
-
-                if(distanceToPoi != null) {
-                    canvas.drawText(distanceToPoi, canvas.getWidth() / 2, canvas.getHeight() / 6, contentPaint);
-                }
            }
 
     }}
@@ -176,45 +179,36 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
     public void onLocationChanged(Location location) {
         lastLocation = location;
 
-        Poi poi = PoiService.getInstance().getPoi(getContext()).get(0);
-        Location poiLocation = new Location("manual");
-        poiLocation.setLatitude(poi.getLatitude());
-        poiLocation.setLongitude(poi.getLongitude());
-        poiLocation.setAltitude(poi.getAltitude());
-
-        curBearing = lastLocation.bearingTo(poiLocation);
-        String formatDistance;
-        double distanceNumber = lastLocation.distanceTo(poiLocation);
-        if(distanceNumber > 1000) {
-            formatDistance = "%.2f km";
-            distanceNumber /= 1000;
-        } else {
-            formatDistance = "%.2f m";
+        for(Poi poi: poiToDraw) {
+            Location poiLocation = new Location("manual");
+            poiLocation.setLatitude(poi.getLatitude());
+            poiLocation.setLongitude(poi.getLongitude());
+            poiLocation.setAltitude(poi.getAltitude());
+            poi.setDistance(lastLocation.distanceTo(poiLocation));
+            poi.setCurBearing(lastLocation.bearingTo(poiLocation));
+            if(poi.getDistance() <= settingsLocation.getRadius()) {
+                poiIsInRadius.add(poiToDraw.indexOf(poi), true);
+            } else {
+                poiIsInRadius.add(poiToDraw.indexOf(poi), false);
+            }
         }
-
-        distanceToPoi = String.format(formatDistance, distanceNumber);
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
+    public void onStatusChanged(String provider, int status, Bundle extras) { }
 
     @Override
-    public void onProviderEnabled(String provider) {
-
-    }
+    public void onProviderEnabled(String provider) { }
 
     @Override
-    public void onProviderDisabled(String provider) {
-
-    }
+    public void onProviderDisabled(String provider) { }
 
     public void pauseGPS() {
         locationManager.removeUpdates(this);
     }
 
     public void resumeGPS() {
+        poiToDraw = PoiService.getInstance().getPoi(getContext());
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
@@ -222,12 +216,22 @@ public class OverlayView extends View implements SensorEventListener, LocationLi
         locationManager.requestLocationUpdates(best, SettingsLocation.getInstance().getRefreshTime() * 1000, 0, this);
     }
 
-
     private float[] lowPass( float[] input, float[] output ) {
         if (output == null) return input;
         for (int i = 0; i < input.length; i++) {
             output[i] = output[i] + 0.1f * (input[i] - output[i]);
         }
         return output;
+    }
+
+    private String distanceFormat(double distance) {
+        String formatDistance;
+        if (distance > 1000) {
+            formatDistance = "%.2f km";
+            distance /= 1000;
+        } else {
+            formatDistance = "%.2f m";
+        }
+        return String.format(formatDistance, distance);
     }
 }

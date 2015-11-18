@@ -6,10 +6,14 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import ar.com.unlam.mae.Utils.Poi;
 
@@ -24,11 +28,10 @@ public class PoiService {
         return instance;
     }
 
-    public List<Poi> getPoi(Context context) {
-        List<Poi> poi = new ArrayList<Poi>();
-        String json = readFromFile(context);
+    public ArrayList<Poi> getPoi(Context context) {
+        ArrayList<Poi> poi = new ArrayList<Poi>();
         try {
-            JSONObject reader = new JSONObject(json);
+            JSONObject reader = readJsonFromFile(context);
             JSONArray pois = reader.getJSONArray("pois");
             for(int i = 0; i < pois.length(); i++) {
                 JSONObject p = pois.getJSONObject(i);
@@ -45,25 +48,61 @@ public class PoiService {
         return poi;
     }
 
-    /*
-        JSONObject jsonObj = new JSONObject();
-        jsonObj.put("name", person.getName()); // Set the first name/pair
-        jsonObj.put("surname", person.getSurname());
-     */
+    public Boolean setPoi(Poi poi, Context context) {
+        try {
+            JSONObject reader = readJsonFromFile(context);
+            JSONArray pois = reader.getJSONArray("pois");
+            JSONObject newPoi = getNewJsonObjectPoi(poi);
+            pois.put(newPoi);
+            reader.put("pois", pois);
+            writeJsonInFile(reader, context);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-   private String readFromFile(Context context) {
+    private JSONObject readJsonFromFile(Context context) throws Exception {
         String json = null;
         try {
-            InputStream is = context.getResources().getAssets().open("poi.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
+            try {
+                FileInputStream is = context.openFileInput("poi.json");
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+                json = new String(buffer, "UTF-8");
+            } catch(Exception e) {
+                new File(context.getFilesDir(), "poi.json");
+                InputStream is = context.getResources().getAssets().open("poi.json");
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+                json = new String(buffer, "UTF-8");
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return json;
+        return new JSONObject(json);
     }
+
+    private JSONObject getNewJsonObjectPoi(Poi poi) throws Exception {
+        JSONObject newPoi = new JSONObject();
+        newPoi.put("name", poi.getName());
+        newPoi.put("category", poi.getCategory());
+        newPoi.put("latitude", poi.getLatitude());
+        newPoi.put("longitude", poi.getLongitude());
+        newPoi.put("altitude", poi.getAltitude());
+        return newPoi;
+    }
+
+    private void writeJsonInFile(JSONObject json, Context context) throws Exception {
+        FileOutputStream fos = context.openFileOutput("poi.json", Context.MODE_PRIVATE);
+        fos.write(json.toString().getBytes());
+        fos.close();
+    }
+
 
 }

@@ -8,6 +8,7 @@ public class Poi {
     private Double longitude;
     private Double altitude;
     private Double distance;
+    private Double curBearing;
 
     public Poi(String name, String cagegory, Double latitude, Double longitude, Double altitude) {
         this.name = name;
@@ -15,6 +16,12 @@ public class Poi {
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
+        this.distance = null;
+        this.curBearing = null;
+    }
+
+    public Poi() {
+
     }
 
     public String getName() {
@@ -43,6 +50,14 @@ public class Poi {
 
     public double getDistance() {
         return distance;
+    }
+
+    public void setCurBearing(double curBearing) {
+        this.curBearing = curBearing;
+    }
+
+    public double getCurBearing() {
+        return curBearing;
     }
 
 }
