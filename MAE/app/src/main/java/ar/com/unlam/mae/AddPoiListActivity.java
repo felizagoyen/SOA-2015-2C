@@ -25,12 +25,12 @@ public class AddPoiListActivity extends Activity {
             listPoi.add(category.name());
         }
 
-        final ListView listView1 = (ListView) findViewById(R.id.list);
+        final ListView listViewPoi = (ListView) findViewById(R.id.list);
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listPoi);
-        listView1.setAdapter(adapter);
+        listViewPoi.setAdapter(adapter);
 
-        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewPoi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent returnIntent = new Intent();

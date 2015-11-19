@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
     Camera camera;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //getApplicationContext().deleteFile("poi.json");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         camera = null;
